@@ -26,7 +26,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="My pantry"
+                android:text="Suggested recipes"
                 android:textColor="@color/pantry_dark"
                 android:textSize="28sp"
                 android:textStyle="bold" />
@@ -34,80 +34,51 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Good food starts here."
+                android:text="Made with what you already have."
                 android:textColor="@color/pantry_secondary"
                 android:textSize="15sp"
-                android:layout_marginBottom="18dp" />
+                android:layout_marginBottom="20dp" />
 
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="82dp"
-                android:gravity="center"
-                android:text="🌿  Use what\nyou have."
-                android:textColor="@color/pantry_dark"
-                android:textSize="20sp"
+                android:layout_height="wrap_content"
+                android:text="✓  All ingredients &amp; quantities checked."
+                android:textColor="@color/pantry_pink"
+                android:textSize="14sp"
                 android:textStyle="bold"
                 android:background="@drawable/input_background"
                 android:backgroundTint="@color/pantry_light_pink"
-                android:layout_marginBottom="14dp" />
+                android:padding="14dp"
+                android:layout_marginBottom="18dp" />
 
-            <EditText
-                android:id="@+id/etSearch"
-                android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:hint="Search ingredients"
-                android:singleLine="true"
-                android:inputType="text"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:textColor="@color/pantry_dark"
-                android:textColorHint="@color/pantry_secondary"
-                android:background="@drawable/input_background"
-                android:layout_marginBottom="16dp" />
-
-            <!-- Saved pantry ingredients will appear here -->
             <LinearLayout
-                android:id="@+id/pantryContainer"
+                android:id="@+id/recipesContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/tvEmptyPantry"
+                    android:id="@+id/tvNoRecipes"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="No ingredients yet.\nTap Add ingredient to get started."
+                    android:text="No recipes match your pantry yet.\nAdd more ingredients to see suggestions."
                     android:textAlignment="center"
                     android:textColor="@color/pantry_secondary"
                     android:textSize="15sp"
-                    android:padding="24dp" />
+                    android:padding="32dp" />
 
             </LinearLayout>
-
-            <Button
-                android:id="@+id/btnAddIngredient"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:text="+  Add ingredient"
-                android:textAllCaps="false"
-                android:textSize="16sp"
-                android:textColor="@android:color/white"
-                android:backgroundTint="@color/pantry_pink"
-                android:layout_marginTop="16dp" />
 
         </LinearLayout>
 
     </ScrollView>
 
-    <!-- Bottom Navigation -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="72dp"
         android:orientation="horizontal"
         android:gravity="center"
-        android:background="@color/pantry_card"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp">
+        android:background="@color/pantry_card">
 
         <TextView
             android:id="@+id/navPantry"
@@ -117,8 +88,7 @@
             android:gravity="center"
             android:text="▣&#10;Pantry"
             android:textAlignment="center"
-            android:textColor="@color/pantry_pink"
-            android:textStyle="bold" />
+            android:textColor="@color/pantry_secondary" />
 
         <TextView
             android:id="@+id/navRecipes"
@@ -128,7 +98,8 @@
             android:gravity="center"
             android:text="♨&#10;Recipes"
             android:textAlignment="center"
-            android:textColor="@color/pantry_secondary" />
+            android:textColor="@color/pantry_pink"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/navSettings"
