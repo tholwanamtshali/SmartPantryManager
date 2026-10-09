@@ -2,8 +2,11 @@ package com.example.smartpantrymanager;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,6 +26,7 @@ public class MainActivity extends AppCompatActivity
     private DatabaseHelper databaseHelper;
     private RecyclerView rvPantry;
     private TextView tvEmptyPantry;
+    private EditText etSearch;
     private PantryAdapter pantryAdapter;
 
     @Override
@@ -35,11 +39,31 @@ public class MainActivity extends AppCompatActivity
 
         rvPantry = findViewById(R.id.rvPantry);
         tvEmptyPantry = findViewById(R.id.tvEmptyPantry);
+        etSearch = findViewById(R.id.etSearch);
 
         pantryAdapter = new PantryAdapter(this);
 
         rvPantry.setLayoutManager(new LinearLayoutManager(this));
         rvPantry.setAdapter(pantryAdapter);
+
+        // Live search — filter the RecyclerView as the user types
+        etSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(
+                    CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(
+                    CharSequence s, int start, int before, int count) {
+                pantryAdapter.filter(s.toString());
+                updateEmptyState();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
 
         Button btnAddIngredient = findViewById(R.id.btnAddIngredient);
         btnAddIngredient.setOnClickListener(v -> {
@@ -91,7 +115,23 @@ public class MainActivity extends AppCompatActivity
 
         pantryAdapter.setIngredients(ingredients);
 
-        if (ingredients.isEmpty()) {
+        // Re-apply the current search query after reload
+        if (etSearch != null) {
+            pantryAdapter.filter(etSearch.getText().toString());
+        }
+
+        updateEmptyState();
+    }
+
+    /**
+     * Updates the empty state message based on what's actually
+     * showing in the RecyclerView (accounting for the search filter).
+     */
+    private void updateEmptyState() {
+
+        boolean nothingToShow = pantryAdapter.getItemCount() == 0;
+
+        if (nothingToShow) {
             tvEmptyPantry.setVisibility(View.VISIBLE);
             rvPantry.setVisibility(View.GONE);
         } else {

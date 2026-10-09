@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class PantryAdapter
         extends RecyclerView.Adapter<PantryAdapter.PantryViewHolder> {
@@ -20,16 +21,57 @@ public class PantryAdapter
         void onDelete(Ingredient ingredient);
     }
 
-    private final List<Ingredient> ingredients = new ArrayList<>();
+    // Full list — everything in the pantry
+    private final List<Ingredient> allIngredients = new ArrayList<>();
+
+    // Currently displayed list — equals allIngredients when no filter is active
+    private final List<Ingredient> visibleIngredients = new ArrayList<>();
+
     private final OnIngredientActionListener listener;
 
     public PantryAdapter(OnIngredientActionListener listener) {
         this.listener = listener;
     }
 
+    /**
+     * Replace the entire pantry list (called after loading from the DB).
+     * Also re-applies the current filter if one is set.
+     */
     public void setIngredients(List<Ingredient> newList) {
-        ingredients.clear();
-        ingredients.addAll(newList);
+        allIngredients.clear();
+        allIngredients.addAll(newList);
+        applyFilter(currentQuery);
+    }
+
+    private String currentQuery = "";
+
+    /**
+     * Filters the pantry by ingredient name, case-insensitively.
+     * Passing null or "" clears the filter and shows everything.
+     */
+    public void filter(String query) {
+        currentQuery = query == null ? "" : query;
+        applyFilter(currentQuery);
+    }
+
+    private void applyFilter(String query) {
+
+        visibleIngredients.clear();
+
+        String q = query.toLowerCase(Locale.getDefault()).trim();
+
+        if (q.isEmpty()) {
+            visibleIngredients.addAll(allIngredients);
+        } else {
+            for (Ingredient ingredient : allIngredients) {
+                if (ingredient.getName()
+                        .toLowerCase(Locale.getDefault())
+                        .contains(q)) {
+                    visibleIngredients.add(ingredient);
+                }
+            }
+        }
+
         notifyDataSetChanged();
     }
 
@@ -50,7 +92,7 @@ public class PantryAdapter
             @NonNull PantryViewHolder holder,
             int position
     ) {
-        Ingredient ingredient = ingredients.get(position);
+        Ingredient ingredient = visibleIngredients.get(position);
 
         holder.tvName.setText(ingredient.getName());
 
@@ -82,7 +124,7 @@ public class PantryAdapter
 
     @Override
     public int getItemCount() {
-        return ingredients.size();
+        return visibleIngredients.size();
     }
 
     static class PantryViewHolder extends RecyclerView.ViewHolder {
