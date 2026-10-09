@@ -1,24 +1,21 @@
 package com.example.smartpantrymanager;
 
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import android.widget.TextView;
-
-import android.database.Cursor;
-import android.widget.LinearLayout;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import android.graphics.Typeface;
-import android.view.View;
-
-import android.content.Intent;
 
 public class SuggestedRecipesActivity extends AppCompatActivity {
 
@@ -31,27 +28,27 @@ public class SuggestedRecipesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_suggested_recipes);
+
         databaseHelper = new DatabaseHelper(this);
         recipesContainer = findViewById(R.id.recipesContainer);
         tvNoRecipes = findViewById(R.id.tvNoRecipes);
-        loadSuggestedRecipes();
+
         TextView navPantry = findViewById(R.id.navPantry);
         navPantry.setOnClickListener(v -> finish());
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
 
         TextView navSettings = findViewById(R.id.navSettings);
-
         navSettings.setOnClickListener(v -> {
             Intent intent = new Intent(
                     SuggestedRecipesActivity.this,
                     SettingsActivity.class
             );
-
             startActivity(intent);
+        });
+
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
         });
     }
 
@@ -109,32 +106,24 @@ public class SuggestedRecipesActivity extends AppCompatActivity {
 
         boolean recipeFound = false;
 
-        // French Toast
-        double bread = getQuantity(pantry, "bread");
-        double eggs = getQuantity(pantry, "egg", "eggs");
-        double milk = getQuantity(pantry, "milk");
+        for (Recipe recipe : RecipeRepository.getRecipes()) {
 
-        if (bread >= 2 && eggs >= 1 && milk >= 60) {
+            if (canMakeRecipe(recipe, pantry)) {
 
-            addRecipeCard(
-                    "French toast",
-                    "15 min • 3 ingredients",
-                    "✓ You have everything."
-            );
+                String details =
+                        recipe.getTime() +
+                                " • " +
+                                recipe.getRequiredIngredients().size() +
+                                " ingredients";
 
-            recipeFound = true;
-        }
+                addRecipeCard(
+                        recipe.getTitle(),
+                        details,
+                        "✓ You have everything."
+                );
 
-        // Boiled Eggs
-        if (eggs >= 1) {
-
-            addRecipeCard(
-                    "Boiled eggs",
-                    "10 min • 1 ingredient",
-                    "✓ You have everything."
-            );
-
-            recipeFound = true;
+                recipeFound = true;
+            }
         }
 
         if (!recipeFound) {
@@ -145,8 +134,71 @@ public class SuggestedRecipesActivity extends AppCompatActivity {
             );
 
             tvNoRecipes.setVisibility(View.VISIBLE);
-            recipesContainer.addView(tvNoRecipes);
+
+        } else {
+
+            tvNoRecipes.setVisibility(View.GONE);
         }
+    }
+
+    private boolean canMakeRecipe(
+            Recipe recipe,
+            Map<String, Double> pantry
+    ) {
+
+        for (Map.Entry<String, Double> requirement :
+                recipe.getRequiredIngredients().entrySet()) {
+
+            String ingredient = requirement.getKey();
+            double requiredQuantity = requirement.getValue();
+
+            double availableQuantity =
+                    getPantryQuantity(pantry, ingredient);
+
+            if (availableQuantity < requiredQuantity) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private double getPantryQuantity(
+            Map<String, Double> pantry,
+            String ingredient
+    ) {
+
+        String name = ingredient.toLowerCase().trim();
+
+        if (pantry.containsKey(name)) {
+            return pantry.get(name);
+        }
+
+        if (name.equals("eggs") && pantry.containsKey("egg")) {
+            return pantry.get("egg");
+        }
+
+        if (name.equals("egg") && pantry.containsKey("eggs")) {
+            return pantry.get("eggs");
+        }
+
+        if (name.equals("tomatoes") && pantry.containsKey("tomato")) {
+            return pantry.get("tomato");
+        }
+
+        if (name.equals("tomato") && pantry.containsKey("tomatoes")) {
+            return pantry.get("tomatoes");
+        }
+
+        if (name.equals("yoghurt") && pantry.containsKey("yogurt")) {
+            return pantry.get("yogurt");
+        }
+
+        if (name.equals("yogurt") && pantry.containsKey("yoghurt")) {
+            return pantry.get("yoghurt");
+        }
+
+        return 0;
     }
 
     private void addRecipeCard(
@@ -195,10 +247,6 @@ public class SuggestedRecipesActivity extends AppCompatActivity {
         card.addView(detailsText);
         card.addView(availabilityText);
 
-        card.addView(titleText);
-        card.addView(detailsText);
-        card.addView(availabilityText);
-
         card.setOnClickListener(v -> {
 
             Intent intent = new Intent(
@@ -210,8 +258,6 @@ public class SuggestedRecipesActivity extends AppCompatActivity {
 
             startActivity(intent);
         });
-
-        recipesContainer.addView(card);
 
         recipesContainer.addView(card);
     }

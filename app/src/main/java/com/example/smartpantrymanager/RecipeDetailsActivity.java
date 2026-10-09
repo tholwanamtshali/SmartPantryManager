@@ -9,6 +9,8 @@ import android.graphics.Typeface;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.Map;
+
 public class RecipeDetailsActivity extends AppCompatActivity {
 
     @Override
@@ -27,54 +29,31 @@ public class RecipeDetailsActivity extends AppCompatActivity {
 
         ingredientsContainer.removeAllViews();
 
-        if ("Boiled eggs".equalsIgnoreCase(recipeTitle)) {
+        Recipe recipe = RecipeRepository.getRecipeByTitle(recipeTitle);
 
-            tvRecipeTitle.setText("Boiled eggs");
-            tvRecipeBanner.setText("🥚");
-            tvRecipeMeta.setText("10 min • 1 serving");
+        if (recipe != null) {
 
-            addIngredientRow(
-                    ingredientsContainer,
-                    "Egg",
-                    "1 piece"
+            tvRecipeTitle.setText(recipe.getTitle());
+            tvRecipeBanner.setText(recipe.getIcon());
+
+            tvRecipeMeta.setText(
+                    recipe.getTime() + " • " + recipe.getServings()
             );
 
-            tvMethod.setText(
-                    "①  Place the egg in a pot and cover with water.\n\n" +
-                            "②  Bring the water to a boil.\n\n" +
-                            "③  Boil until cooked, then cool and peel."
-            );
+            for (Map.Entry<String, Double> ingredient :
+                    recipe.getRequiredIngredients().entrySet()) {
 
-        } else {
+                addIngredientRow(
+                        ingredientsContainer,
+                        formatIngredientName(ingredient.getKey()),
+                        formatIngredientAmount(
+                                ingredient.getKey(),
+                                ingredient.getValue()
+                        )
+                );
+            }
 
-            // Default to French Toast
-            tvRecipeTitle.setText("French toast");
-            tvRecipeBanner.setText("🍞");
-            tvRecipeMeta.setText("15 min • 1 serving");
-
-            addIngredientRow(
-                    ingredientsContainer,
-                    "Bread",
-                    "2 slices"
-            );
-
-            addIngredientRow(
-                    ingredientsContainer,
-                    "Egg",
-                    "1 piece"
-            );
-
-            addIngredientRow(
-                    ingredientsContainer,
-                    "Milk",
-                    "60 ml"
-            );
-
-            tvMethod.setText(
-                    "①  Whisk the egg and milk.\n\n" +
-                            "②  Dip the bread into the mixture.\n\n" +
-                            "③  Cook in a non-stick pan until golden."
-            );
+            tvMethod.setText(recipe.getMethod());
         }
 
         btnBack.setOnClickListener(v -> finish());
@@ -147,5 +126,56 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         row.setPadding(8, 12, 8, 12);
 
         container.addView(row);
+    }
+
+    private String formatIngredientName(String ingredient) {
+
+        if (ingredient.equalsIgnoreCase("eggs")) {
+            return "Egg";
+        }
+
+        if (ingredient.equalsIgnoreCase("tomatoes")) {
+            return "Tomato";
+        }
+
+        String firstLetter =
+                ingredient.substring(0, 1).toUpperCase();
+
+        return firstLetter + ingredient.substring(1);
+    }
+
+    private String formatIngredientAmount(
+            String ingredient,
+            double quantity
+    ) {
+
+        int wholeQuantity = (int) quantity;
+
+        switch (ingredient.toLowerCase()) {
+
+            case "bread":
+                return wholeQuantity + " slices";
+
+            case "eggs":
+            case "tomatoes":
+            case "banana":
+                return wholeQuantity + " piece" +
+                        (wholeQuantity == 1 ? "" : "s");
+
+            case "milk":
+            case "yoghurt":
+            case "yogurt":
+                return wholeQuantity + " ml";
+
+            case "cereal":
+                return wholeQuantity + " g";
+
+            case "cheese":
+                return wholeQuantity + " slice" +
+                        (wholeQuantity == 1 ? "" : "s");
+
+            default:
+                return String.valueOf(quantity);
+        }
     }
 }

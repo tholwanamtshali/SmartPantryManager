@@ -66,6 +66,51 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 null
         );
     }
+
+    public java.util.List<Ingredient> getAllIngredientsList() {
+
+        java.util.List<Ingredient> list = new java.util.ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(
+                "SELECT * FROM " + TABLE_PANTRY,
+                null
+        );
+
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(
+                        cursor.getColumnIndexOrThrow(COL_ID)
+                );
+
+                String name = cursor.getString(
+                        cursor.getColumnIndexOrThrow(COL_NAME)
+                );
+
+                double quantity = cursor.getDouble(
+                        cursor.getColumnIndexOrThrow(COL_QUANTITY)
+                );
+
+                String unit = cursor.getString(
+                        cursor.getColumnIndexOrThrow(COL_UNIT)
+                );
+
+                String expiryDate = cursor.getString(
+                        cursor.getColumnIndexOrThrow(COL_EXPIRY_DATE)
+                );
+
+                list.add(new Ingredient(
+                        id, name, quantity, unit, expiryDate
+                ));
+
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+
+        return list;
+    }
     public boolean updateIngredient(int id, String name, double quantity,
                                     String unit, String expiryDate) {
 
