@@ -21,6 +21,8 @@ public class SuggestedRecipesActivity extends AppCompatActivity {
 
     private DatabaseHelper databaseHelper;
     private LinearLayout recipesContainer;
+    private LinearLayout almostThereContainer;
+    private LinearLayout almostThereSection;
     private TextView tvNoRecipes;
 
     @Override
@@ -31,6 +33,8 @@ public class SuggestedRecipesActivity extends AppCompatActivity {
 
         databaseHelper = new DatabaseHelper(this);
         recipesContainer = findViewById(R.id.recipesContainer);
+        almostThereContainer = findViewById(R.id.almostThereContainer);
+        almostThereSection = findViewById(R.id.almostThereSection);
         tvNoRecipes = findViewById(R.id.tvNoRecipes);
 
         TextView navPantry = findViewById(R.id.navPantry);
@@ -61,6 +65,11 @@ public class SuggestedRecipesActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Reads the pantry from the database and returns a map of
+     * ingredient name -> quantity already converted into the
+     * standard base unit for that ingredient.
+     */
     private Map<String, Double> getPantryItems() {
 
         Map<String, Double> pantry = new HashMap<>();
@@ -77,7 +86,22 @@ public class SuggestedRecipesActivity extends AppCompatActivity {
                     cursor.getColumnIndexOrThrow(DatabaseHelper.COL_QUANTITY)
             );
 
-            pantry.put(name.toLowerCase().trim(), quantity);
+            String unit = cursor.getString(
+                    cursor.getColumnIndexOrThrow(DatabaseHelper.COL_UNIT)
+            );
+
+            String key = name.toLowerCase().trim();
+
+            double normalised = convertToBaseUnit(
+                    key, quantity, unit
+            );
+
+            // If the same ingredient is stored twice, combine
+            if (pantry.containsKey(key)) {
+                normalised += pantry.get(key);
+            }
+
+            pantry.put(key, normalised);
         }
 
         cursor.close();
@@ -85,30 +109,21 @@ public class SuggestedRecipesActivity extends AppCompatActivity {
         return pantry;
     }
 
-    private double getQuantity(Map<String, Double> pantry, String... names) {
-
-        for (String name : names) {
-            Double quantity = pantry.get(name.toLowerCase().trim());
-
-            if (quantity != null) {
-                return quantity;
-            }
-        }
-
-        return 0;
-    }
-
     private void loadSuggestedRecipes() {
 
         recipesContainer.removeAllViews();
+        almostThereContainer.removeAllViews();
 
         Map<String, Double> pantry = getPantryItems();
 
         boolean recipeFound = false;
+        boolean almostThereFound = false;
 
         for (Recipe recipe : RecipeRepository.getRecipes()) {
 
-            if (canMakeRecipe(recipe, pantry)) {
+            int missingCount = countMissingIngredients(recipe, pantry);
+
+            if (missingCount == 0) {
 
                 String details =
                         recipe.getTime() +
@@ -117,12 +132,31 @@ public class SuggestedRecipesActivity extends AppCompatActivity {
                                 " ingredients";
 
                 addRecipeCard(
+                        recipesContainer,
                         recipe.getTitle(),
                         details,
-                        "✓ You have everything."
+                        "✓ You have everything.",
+                        true
                 );
 
                 recipeFound = true;
+
+            } else if (missingCount == 1) {
+
+                String details =
+                        recipe.getTime() +
+                                " • missing " +
+                                getMissingIngredientName(recipe, pantry);
+
+                addRecipeCard(
+                        almostThereContainer,
+                        recipe.getTitle(),
+                        details,
+                        "Add the missing ingredient to unlock.",
+                        false
+                );
+
+                almostThereFound = true;
             }
         }
 
@@ -139,9 +173,41 @@ public class SuggestedRecipesActivity extends AppCompatActivity {
 
             tvNoRecipes.setVisibility(View.GONE);
         }
+
+        almostThereSection.setVisibility(
+                almostThereFound ? View.VISIBLE : View.GONE
+        );
     }
 
-    private boolean canMakeRecipe(
+    private int countMissingIngredients(
+            Recipe recipe,
+            Map<String, Double> pantry
+    ) {
+
+        int missing = 0;
+
+        for (Map.Entry<String, Double> requirement :
+                recipe.getRequiredIngredients().entrySet()) {
+
+            String ingredient = requirement.getKey();
+            double requiredQuantity = requirement.getValue();
+
+            double availableQuantity =
+                    getPantryQuantity(pantry, ingredient);
+
+            if (availableQuantity < requiredQuantity) {
+                missing++;
+
+                if (missing > 1) {
+                    return missing;
+                }
+            }
+        }
+
+        return missing;
+    }
+
+    private String getMissingIngredientName(
             Recipe recipe,
             Map<String, Double> pantry
     ) {
@@ -156,11 +222,30 @@ public class SuggestedRecipesActivity extends AppCompatActivity {
                     getPantryQuantity(pantry, ingredient);
 
             if (availableQuantity < requiredQuantity) {
-                return false;
+                return formatIngredientName(ingredient);
             }
         }
 
-        return true;
+        return "1 ingredient";
+    }
+
+    private String formatIngredientName(String ingredient) {
+
+        if (ingredient == null || ingredient.isEmpty()) {
+            return ingredient;
+        }
+
+        String lower = ingredient.toLowerCase().trim();
+
+        if (lower.equals("eggs")) {
+            return "egg";
+        }
+
+        if (lower.equals("tomatoes")) {
+            return "tomato";
+        }
+
+        return ingredient;
     }
 
     private double getPantryQuantity(
@@ -201,10 +286,58 @@ public class SuggestedRecipesActivity extends AppCompatActivity {
         return 0;
     }
 
+    /**
+     * Converts a pantry quantity in its stored unit into the
+     * standard base unit for that ingredient. The base units
+     * match what RecipeRepository uses:
+     *
+     *   milk, yoghurt  -> millilitres (ml)
+     *   cereal         -> grams (g)
+     *   everything else -> pieces / slices (count)
+     */
+    private double convertToBaseUnit(
+            String ingredient,
+            double quantity,
+            String unit
+    ) {
+
+        if (unit == null) {
+            return quantity;
+        }
+
+        String u = unit.toLowerCase().trim();
+
+        // Normalise litre / millilitre
+        if (u.equals("l") || u.equals("litre") || u.equals("liter")
+                || u.equals("litres") || u.equals("liters")) {
+            return quantity * 1000.0;
+        }
+
+        if (u.equals("ml") || u.equals("millilitre") || u.equals("milliliter")
+                || u.equals("millilitres") || u.equals("milliliters")) {
+            return quantity;
+        }
+
+        // Normalise kilogram / gram
+        if (u.equals("kg") || u.equals("kilogram")
+                || u.equals("kilograms")) {
+            return quantity * 1000.0;
+        }
+
+        if (u.equals("g") || u.equals("gram") || u.equals("grams")) {
+            return quantity;
+        }
+
+        // Everything else (pieces, slices, cups, etc.) — assume 1:1
+        return quantity;
+    }
+
     private void addRecipeCard(
+            LinearLayout parent,
             String title,
             String details,
-            String availability
+            String availability,
+            boolean available
     ) {
 
         LinearLayout card = new LinearLayout(this);
@@ -240,7 +373,11 @@ public class SuggestedRecipesActivity extends AppCompatActivity {
         availabilityText.setText(availability);
         availabilityText.setTextSize(14);
         availabilityText.setTextColor(
-                getResources().getColor(R.color.pantry_pink)
+                getResources().getColor(
+                        available
+                                ? R.color.pantry_pink
+                                : R.color.pantry_secondary
+                )
         );
 
         card.addView(titleText);
@@ -259,6 +396,6 @@ public class SuggestedRecipesActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        recipesContainer.addView(card);
+        parent.addView(card);
     }
 }
