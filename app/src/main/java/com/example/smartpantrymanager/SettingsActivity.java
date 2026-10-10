@@ -17,6 +17,8 @@ import android.widget.Switch;
 import androidx.appcompat.app.AlertDialog;
 import android.view.View;
 
+import android.widget.LinearLayout;
+
 public class SettingsActivity extends AppCompatActivity {
 
     @Override
@@ -24,8 +26,8 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_settings);
-        TextView navPantry = findViewById(R.id.navPantry);
-        TextView navRecipes = findViewById(R.id.navRecipes);
+        LinearLayout navPantry = findViewById(R.id.navPantry);
+        LinearLayout navRecipes = findViewById(R.id.navRecipes);
 
         navPantry.setOnClickListener(v -> {
             Intent intent = new Intent(

@@ -21,7 +21,7 @@ public class RecipeRepository {
                 "French toast",
                 "15 min",
                 "1 serving",
-                "🍞",
+                R.drawable.ic_food_default,
                 frenchToast,
                 "Whisk the egg and milk.\n\n" +
                         "Dip the bread into the mixture.\n\n" +
@@ -36,7 +36,7 @@ public class RecipeRepository {
                 "Boiled eggs",
                 "10 min",
                 "1 serving",
-                "🥚",
+                R.drawable.ic_food_default,
                 boiledEggs,
                 "Place the egg in a pot and cover with water.\n\n" +
                         "Bring the water to a boil.\n\n" +
@@ -52,7 +52,7 @@ public class RecipeRepository {
                 "Scrambled eggs",
                 "10 min",
                 "1 serving",
-                "🍳",
+                R.drawable.ic_food_default,
                 scrambledEggs,
                 "Whisk the eggs and milk.\n\n" +
                         "Pour into a heated pan.\n\n" +
@@ -68,7 +68,7 @@ public class RecipeRepository {
                 "Egg sandwich",
                 "12 min",
                 "1 serving",
-                "🥪",
+                R.drawable.ic_food_default,
                 eggSandwich,
                 "Cook the egg to your preference.\n\n" +
                         "Place it between two slices of bread.\n\n" +
@@ -84,7 +84,7 @@ public class RecipeRepository {
                 "Tomato toast",
                 "10 min",
                 "1 serving",
-                "🍅",
+                R.drawable.ic_food_default,
                 tomatoToast,
                 "Toast the bread.\n\n" +
                         "Slice the tomato.\n\n" +
@@ -100,7 +100,7 @@ public class RecipeRepository {
                 "Cheese toast",
                 "10 min",
                 "1 serving",
-                "🧀",
+                R.drawable.ic_food_default,
                 cheeseToast,
                 "Place cheese on the bread.\n\n" +
                         "Toast until the cheese melts.\n\n" +
@@ -116,7 +116,7 @@ public class RecipeRepository {
                 "Cheese omelette",
                 "12 min",
                 "1 serving",
-                "🍳",
+                R.drawable.ic_food_default,
                 cheeseOmelette,
                 "Beat the eggs.\n\n" +
                         "Pour into a heated pan.\n\n" +
@@ -132,7 +132,7 @@ public class RecipeRepository {
                 "Tomato omelette",
                 "12 min",
                 "1 serving",
-                "🍅",
+                R.drawable.ic_food_default,
                 tomatoOmelette,
                 "Beat the eggs.\n\n" +
                         "Add chopped tomato.\n\n" +
@@ -148,7 +148,7 @@ public class RecipeRepository {
                 "Cereal with milk",
                 "5 min",
                 "1 serving",
-                "🥣",
+                R.drawable.ic_food_default,
                 cerealMilk,
                 "Add cereal to a bowl.\n\n" +
                         "Pour milk over the cereal.\n\n" +
@@ -165,7 +165,7 @@ public class RecipeRepository {
                 "Banana cereal",
                 "5 min",
                 "1 serving",
-                "🍌",
+                R.drawable.ic_food_default,
                 bananaCereal,
                 "Add cereal and milk to a bowl.\n\n" +
                         "Slice the banana.\n\n" +
@@ -181,7 +181,7 @@ public class RecipeRepository {
                 "Banana toast",
                 "7 min",
                 "1 serving",
-                "🍌",
+                R.drawable.ic_food_default,
                 bananaToast,
                 "Toast the bread.\n\n" +
                         "Slice or mash the banana.\n\n" +
@@ -197,7 +197,7 @@ public class RecipeRepository {
                 "Yoghurt and banana",
                 "5 min",
                 "1 serving",
-                "🥣",
+                R.drawable.ic_food_default,
                 yoghurtBanana,
                 "Add yoghurt to a bowl.\n\n" +
                         "Slice the banana.\n\n" +
@@ -214,7 +214,7 @@ public class RecipeRepository {
                 "Tomato and cheese sandwich",
                 "8 min",
                 "1 serving",
-                "🥪",
+                R.drawable.ic_food_default,
                 tomatoCheeseSandwich,
                 "Slice the tomato and cheese.\n\n" +
                         "Place them between two slices of bread.\n\n" +
@@ -231,7 +231,7 @@ public class RecipeRepository {
                 "Egg and tomato sandwich",
                 "15 min",
                 "1 serving",
-                "🥪",
+                R.drawable.ic_food_default,
                 eggTomatoSandwich,
                 "Cook the egg.\n\n" +
                         "Slice the tomato.\n\n" +
@@ -248,7 +248,7 @@ public class RecipeRepository {
                 "Egg and cheese sandwich",
                 "15 min",
                 "1 serving",
-                "🥪",
+                R.drawable.ic_food_default,
                 eggCheeseSandwich,
                 "Cook the egg.\n\n" +
                         "Place the egg and cheese on the bread.\n\n" +

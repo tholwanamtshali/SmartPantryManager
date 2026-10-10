@@ -7,7 +7,7 @@ public class Recipe {
     private final String title;
     private final String time;
     private final String servings;
-    private final String icon;
+    private final int iconRes;
     private final Map<String, Double> requiredIngredients;
     private final String method;
 
@@ -15,14 +15,14 @@ public class Recipe {
             String title,
             String time,
             String servings,
-            String icon,
+            int iconRes,
             Map<String, Double> requiredIngredients,
             String method
     ) {
         this.title = title;
         this.time = time;
         this.servings = servings;
-        this.icon = icon;
+        this.iconRes = iconRes;
         this.requiredIngredients = requiredIngredients;
         this.method = method;
     }
@@ -39,8 +39,8 @@ public class Recipe {
         return servings;
     }
 
-    public String getIcon() {
-        return icon;
+    public int getIconRes() {
+        return iconRes;
     }
 
     public Map<String, Double> getRequiredIngredients() {

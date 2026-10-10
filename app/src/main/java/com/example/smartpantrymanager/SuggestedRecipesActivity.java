@@ -37,10 +37,10 @@ public class SuggestedRecipesActivity extends AppCompatActivity {
         almostThereSection = findViewById(R.id.almostThereSection);
         tvNoRecipes = findViewById(R.id.tvNoRecipes);
 
-        TextView navPantry = findViewById(R.id.navPantry);
+        LinearLayout navPantry = findViewById(R.id.navPantry);
         navPantry.setOnClickListener(v -> finish());
 
-        TextView navSettings = findViewById(R.id.navSettings);
+        LinearLayout navSettings = findViewById(R.id.navSettings);
         navSettings.setOnClickListener(v -> {
             Intent intent = new Intent(
                     SuggestedRecipesActivity.this,

@@ -20,6 +20,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+import android.widget.LinearLayout;
+
 public class MainActivity extends AppCompatActivity
         implements PantryAdapter.OnIngredientActionListener {
 
@@ -74,7 +76,7 @@ public class MainActivity extends AppCompatActivity
             startActivity(intent);
         });
 
-        TextView navRecipes = findViewById(R.id.navRecipes);
+        LinearLayout navRecipes = findViewById(R.id.navRecipes);
         navRecipes.setOnClickListener(v -> {
             Intent intent = new Intent(
                     MainActivity.this,
@@ -83,7 +85,7 @@ public class MainActivity extends AppCompatActivity
             startActivity(intent);
         });
 
-        TextView navSettings = findViewById(R.id.navSettings);
+        LinearLayout navSettings = findViewById(R.id.navSettings);
         navSettings.setOnClickListener(v -> {
             Intent intent = new Intent(
                     MainActivity.this,

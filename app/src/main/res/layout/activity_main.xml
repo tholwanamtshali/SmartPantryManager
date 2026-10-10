@@ -2,6 +2,7 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -38,7 +39,7 @@
             android:layout_width="match_parent"
             android:layout_height="82dp"
             android:gravity="center"
-            android:text="🌿  Use what\nyou have."
+            android:text="Use what\nyou have."
             android:textColor="@color/pantry_dark"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -111,36 +112,78 @@
         android:paddingStart="12dp"
         android:paddingEnd="12dp">
 
-        <TextView
+        <LinearLayout
             android:id="@+id/navPantry"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center"
-            android:text="▣&#10;Pantry"
-            android:textAlignment="center"
-            android:textColor="@color/pantry_pink"
-            android:textStyle="bold" />
+            android:orientation="vertical"
+            android:gravity="center">
 
-        <TextView
+            <ImageView
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:src="@drawable/ic_pantry"
+                android:contentDescription="Pantry"
+                app:tint="@color/pantry_pink" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pantry"
+                android:textColor="@color/pantry_pink"
+                android:textStyle="bold"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp" />
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/navRecipes"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center"
-            android:text="♨&#10;Recipes"
-            android:textAlignment="center"
-            android:textColor="@color/pantry_secondary" />
+            android:orientation="vertical"
+            android:gravity="center">
 
-        <TextView
+            <ImageView
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:src="@drawable/ic_recipes"
+                android:contentDescription="Recipes"
+                app:tint="@color/pantry_secondary" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Recipes"
+                android:textColor="@color/pantry_secondary"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp" />
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/navSettings"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center"
-            android:text="⚙&#10;Settings"
-            android:textAlignment="center"
-            android:textColor="@color/pantry_secondary" />
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:src="@drawable/ic_settings"
+                android:contentDescription="Settings"
+                app:tint="@color/pantry_secondary" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Settings"
+                android:textColor="@color/pantry_secondary"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp" />
+        </LinearLayout>
 
     </LinearLayout>
 
